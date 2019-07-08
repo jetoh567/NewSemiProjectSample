@@ -24,6 +24,7 @@
                 android:resource="@xml/file_paths"/>
         </provider>
 
+        <fragment android:name=".fragment.FragmentCamera"></fragment>
         <activity android:name=".activity.CameraCapture2Activity"></activity>
         <activity android:name=".activity.ModifyMemoActivity"></activity>
         <activity android:name=".activity.NewMemoActivity" />

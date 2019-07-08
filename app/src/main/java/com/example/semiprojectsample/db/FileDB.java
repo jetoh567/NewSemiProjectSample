@@ -5,9 +5,11 @@ import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.example.semiprojectsample.bean.MemberBean;
+import com.example.semiprojectsample.bean.MemoBean;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +35,29 @@ public class FileDB {
         SharedPreferences.Editor editor = getSP(context).edit();
         editor.putString("memberList", listStr);
         editor.commit();
+    }
+
+    // 기존멤버 교체 (메모수정할 때)
+    public static void setMember(Context context, MemberBean memberBean) {
+       // 전체 멤버 리스트를 취득한다.
+        List<MemberBean> memberList = getMemberList(context);
+        if(memberList.size() == 0) return;
+
+        for(int i=0; i<memberList.size(); i++) { // for each
+            MemberBean bean = memberList.get(i);
+            if (TextUtils.equals(bean.memId, memberBean.memId)) {
+                // 같은 멤버ID 를 찾았다.
+                memberList.set(i, memberBean); // 교체하고자하는 인덱스 i
+                break;
+            }
+        }
+        // 새롭게 업데이트된 리스트를 저장한다.
+        String jsonStr = mGson.toJson(memberList);
+        // 멤버 리스트를 저장한다.
+        SharedPreferences.Editor editor = getSP(context).edit();
+        editor.putString("memberList", jsonStr);
+        editor.commit();
+
     }
 
     public static List<MemberBean> getMemberList(Context context) {
@@ -78,7 +103,52 @@ public class FileDB {
         return memberBean;
     }
 
+    // 메모를 추가하는 메소드
+    public static void addMemo(Context context, String memId, MemoBean memoBean) {
+        MemberBean findMember = getFindMember(context, memId);
+        if(findMember == null) return;
 
+        List<MemoBean> memoList = findMember.memoList;
+        if(memoList == null) {
+            memoList = new ArrayList<>();
+        }
 
+        // 고유 메모ID를 생성해준다.
+        //memoBean.memoId = memoList.size() + 1;
+        memoBean.memoId = System.currentTimeMillis();
+        memoList.add(memoBean);
+        findMember.memoList = memoList;
+
+        // 저장
+        setMember(context, findMember);
+    }
+
+    // 기존 메모 교체
+    public static void setMemo(Context context, String memId, MemoBean memoBean) {
+        // TODO
+    }
+
+    // 메모삭제
+    public static void delMemo(Context context, String memId, int memoId) {
+        // TODO
+    }
+
+    // 메모찾기
+    public static void findMemo(Context context, String memId, int memoId) {
+        // TODO
+
+    }
+
+    // 메모리스트 취득
+    public static List<MemoBean> getMemoList(Context context, String memId) {
+        MemberBean memberBean = getFindMember(context, memId);
+        if(memberBean == null) return null;
+
+        if(memberBean.memoList == null) {
+            return new ArrayList<>();
+        } else {
+            return memberBean.memoList;
+        }
+    }
 
 }

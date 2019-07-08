@@ -2,6 +2,7 @@ package com.example.semiprojectsample.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -19,7 +20,8 @@ public class ModifyMemoActivity extends AppCompatActivity {
         btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent i = new Intent(ModifyMemoActivity.this, NewMemoActivity.class);
+                startActivity(i);
             }
         });
 
@@ -35,7 +37,7 @@ public class ModifyMemoActivity extends AppCompatActivity {
         btnDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                
+
             }
         });
     }
